@@ -16,7 +16,7 @@ Basic multi platform real time chat app with react native
 
 ### client
 
-1. Download expo go on phone [Android](https://play.google.com/store/apps/details?id=host.exp.exponent&referrer=docs), [Ios](<[https://pages.github.com/](https://itunes.apple.com/app/apple-store/id982107779)>)
+1. Download expo go on phone [Android](https://play.google.com/store/apps/details?id=host.exp.exponent&referrer=docs), [Ios](https://itunes.apple.com/app/apple-store/id982107779)
 2. Run command `cd chat-app-client`
 3. Then `npm run tunnel`
 4. On the phone you need same network of the host, then open expo go app
