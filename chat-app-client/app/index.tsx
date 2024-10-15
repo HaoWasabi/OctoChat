@@ -55,7 +55,7 @@ const index = () => {
             buttonStyle={styles.submitButton}
             textStyle={styles.submitText}
           >
-            hi
+            Sign in
           </Button>
         </View>
       </View>
