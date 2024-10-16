@@ -43,8 +43,6 @@ export const Button = ({
     },
   });
 
-  console.log(otherprob);
-
   return (
     <>
       <TouchableOpacity {...otherprob} style={buttonStyle}>
