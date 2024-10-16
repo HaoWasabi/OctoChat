@@ -6,6 +6,13 @@ import {
   View,
 } from "react-native";
 import { universalStyles } from "../assets/styles/styles";
+import {
+  LegacyRef,
+  MutableRefObject,
+  RefAttributes,
+  useRef,
+  useState,
+} from "react";
 
 type textContentType =
   | "none"
@@ -52,12 +59,19 @@ type textContentType =
   | undefined;
 
 type probs = {
+  ref?: LegacyRef<TextInput>;
   label: string;
   placeholder: string;
-  textContentType?: textContentType;
-};
+} & TextInputProps;
 
-export const InputGroup = ({ label, placeholder, textContentType }: probs) => {
+export const InputGroup = ({
+  ref,
+  label,
+  placeholder,
+  textContentType,
+  children,
+  ...otherProbs
+}: probs) => {
   const styles = StyleSheet.create({
     label: {
       color: "white",
@@ -71,11 +85,14 @@ export const InputGroup = ({ label, placeholder, textContentType }: probs) => {
     "creditCardSecurityCode",
     "newPassword",
   ];
+  const [testState, setState] = useState("");
 
   return (
     <>
       <Text style={styles.label}>{label ?? "unknow"}</Text>
       <TextInput
+        ref={ref}
+        {...otherProbs}
         textContentType={textContentType}
         secureTextEntry={hiddenInput.includes(textContentType) ? true : false}
         style={universalStyles.input}
