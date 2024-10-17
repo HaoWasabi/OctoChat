@@ -4,10 +4,11 @@ export const universalStyles = StyleSheet.create({
   input: {
     width: "100%",
     height: "auto",
-    padding: 4,
+    padding: 10,
     margin: 6,
-    // borderRadius: 5,
+    borderRadius: 3,
     backgroundColor: "black",
+    color: "white",
   },
   box: {
     width: "95%",

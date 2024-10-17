@@ -52,18 +52,18 @@ const login = () => {
     <>
       <View style={styles.center}>
         <View style={universalStyles.box}>
-          <Text style={styles.text}>Log in</Text>
+          <Text style={styles.text}>Login</Text>
           <InputGroup
             textContentType="username"
-            label="UserName"
-            placeholder="Enter Your UserName"
+            label="Username"
+            placeholder=""
             onChangeText={(e) => setUsername(e)}
             value={username}
           />
           <InputGroup
             textContentType="password"
             label="Password"
-            placeholder="Enter Your Pasword"
+            placeholder=""
             onChangeText={(e) => setPassword(e)}
             value={password}
           />
@@ -72,7 +72,7 @@ const login = () => {
             buttonStyle={styles.submitButton}
             textStyle={styles.submitText}
           >
-            Log in
+            Login
           </Button>
           <Text style={styles.submitText}>
             Need an account?{" "}
