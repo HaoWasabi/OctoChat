@@ -9,7 +9,7 @@ import {
 type probs = {
   buttonStyle?: object;
   textStyle?: object;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 } & TouchableOpacityProps;
 
 export const Button = ({
@@ -46,7 +46,7 @@ export const Button = ({
   return (
     <>
       <TouchableOpacity {...otherprob} style={buttonStyle}>
-        <Text style={textStyle}>{children}</Text>
+        <Text style={textStyle}>{children ? children: ""}</Text>
       </TouchableOpacity>
     </>
   );
