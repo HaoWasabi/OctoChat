@@ -1,6 +1,7 @@
 import { useLocalSearchParams } from "expo-router";
 import { SafeAreaView, StyleSheet, Text } from "react-native";
 import { Link } from "expo-router";
+
 const styles = StyleSheet.create({
   text: {
     color: "white",
@@ -32,7 +33,8 @@ const index = () => {
     <Link
       style={styles.blue}
       key={item}
-      href={"/" + user_id + "/" + server_id + "/" + item}
+      // href={"/" + user_id + "/" + server_id + "/" + item}
+      href={`/${user_id}/${server_id}/${item}`}
     >
       go to channel {item}
     </Link>

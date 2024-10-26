@@ -5,6 +5,8 @@ import {
   Gesture,
   GestureDetector,
 } from "react-native-gesture-handler";
+import { socket } from "../../../../utility/socket";
+import { useEffect, useState } from "react";
 
 const styles = StyleSheet.create({
   text: {
@@ -26,9 +28,31 @@ const styles = StyleSheet.create({
 
 const index = () => {
   const { user_id, server_id, channel_id } = useLocalSearchParams();
+  // const [isConnect, setIsConnect] = useState(socket.connected);
 
-  // const tap = Gesture.Tap().onStart(() => console.log("tap"));
+  // useEffect(() => {
+  //   socket.connect();
+  //   function onConnect() {
+  //     setIsConnect(true);
+  //     console.log(`connected`);
+  //   }
+
+  //   function onDisconnect() {
+  //     setIsConnect(false);
+  //     console.log(`disconnected`);
+  //   }
+
+  //   socket.on("connect", onConnect);
+  //   socket.on("disconnect", onDisconnect);
+
+  //   return () => {
+  //     socket.off("connect", onConnect);
+  //     socket.off("disconnect", onDisconnect);
+  //   };
+  // }, []);
+
   function back() {
+    // socket.disconnect();
     router.back();
   }
 

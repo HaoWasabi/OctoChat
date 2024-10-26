@@ -2,6 +2,7 @@
   "name": "chat-app-server",
   "version": "1.0.0",
   "main": "index.js",
+  "types": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -9,6 +10,17 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.35.3",
+    "express": "^4.21.1",
+    "mysql2": "^3.11.3",
     "socket.io": "^4.8.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241022.0",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.8.1",
+    "drizzle-kit": "^0.26.2",
+    "tsx": "^4.19.1"
   }
 }

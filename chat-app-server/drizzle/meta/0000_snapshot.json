@@ -1,0 +1,740 @@
+{
+  "id": "00000000-0000-0000-0000-000000000000",
+  "prevId": "",
+  "version": "5",
+  "dialect": "mysql",
+  "tables": {
+    "channel_message": {
+      "name": "channel_message",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "channel_id": {
+          "autoincrement": false,
+          "name": "channel_id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "autoincrement": false,
+          "name": "user_id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "channel_type": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "channel_type",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "message": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "message",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "create_at": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "create_at",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "update_at": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "update_at",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "flag": {
+          "default": 0,
+          "autoincrement": false,
+          "name": "flag",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {
+        "user_id": {
+          "name": "user_id",
+          "columns": [
+            "user_id"
+          ],
+          "isUnique": false
+        },
+        "channel_id": {
+          "name": "channel_id",
+          "columns": [
+            "channel_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "channel_message_ibfk_1": {
+          "name": "channel_message_ibfk_1",
+          "tableFrom": "channel_message",
+          "tableTo": "server_channel",
+          "columnsFrom": [
+            "channel_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "restrict"
+        },
+        "channel_message_ibfk_2": {
+          "name": "channel_message_ibfk_2",
+          "tableFrom": "channel_message",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "restrict"
+        },
+        "channel_message_ibfk_3": {
+          "name": "channel_message_ibfk_3",
+          "tableFrom": "channel_message",
+          "tableTo": "dm_channel",
+          "columnsFrom": [
+            "channel_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "restrict"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "dm_channel": {
+      "name": "dm_channel",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "autoincrement": false,
+          "name": "user_id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user2_id": {
+          "autoincrement": false,
+          "name": "user2_id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "create_at": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "create_at",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "flag": {
+          "default": 0,
+          "autoincrement": false,
+          "name": "flag",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {
+        "user_id": {
+          "name": "user_id",
+          "columns": [
+            "user_id"
+          ],
+          "isUnique": false
+        },
+        "user2_id": {
+          "name": "user2_id",
+          "columns": [
+            "user2_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "dm_channel_ibfk_1": {
+          "name": "dm_channel_ibfk_1",
+          "tableFrom": "dm_channel",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "restrict"
+        },
+        "dm_channel_ibfk_2": {
+          "name": "dm_channel_ibfk_2",
+          "tableFrom": "dm_channel",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user2_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "restrict"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "emoji": {
+      "name": "emoji",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "server_id": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "server_id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "emoji_img": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "emoji_img",
+          "type": "blob",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "flag": {
+          "default": 1,
+          "autoincrement": false,
+          "name": "flag",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {
+        "server_id": {
+          "name": "server_id",
+          "columns": [
+            "server_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "emoji_ibfk_1": {
+          "name": "emoji_ibfk_1",
+          "tableFrom": "emoji",
+          "tableTo": "server",
+          "columnsFrom": [
+            "server_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "restrict"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "img": {
+      "name": "img",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "message_id": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "message_id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "content": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "content",
+          "type": "blob",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {
+        "message_id": {
+          "name": "message_id",
+          "columns": [
+            "message_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "img_ibfk_1": {
+          "name": "img_ibfk_1",
+          "tableFrom": "img",
+          "tableTo": "channel_message",
+          "columnsFrom": [
+            "message_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "restrict"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "server": {
+      "name": "server",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "server_name": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "server_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "server_avt": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "server_avt",
+          "type": "blob",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "invite_link": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "invite_link",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "create_at": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "create_at",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "update_at": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "update_at",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "server_channel": {
+      "name": "server_channel",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "server_id": {
+          "autoincrement": false,
+          "name": "server_id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "type",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "create_at": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "create_at",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "update_at": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "update_at",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {
+        "server_id": {
+          "name": "server_id",
+          "columns": [
+            "server_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "server_channel_ibfk_1": {
+          "name": "server_channel_ibfk_1",
+          "tableFrom": "server_channel",
+          "tableTo": "server",
+          "columnsFrom": [
+            "server_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "restrict"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "server_user": {
+      "name": "server_user",
+      "columns": {
+        "server_id": {
+          "autoincrement": false,
+          "name": "server_id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_id": {
+          "autoincrement": false,
+          "name": "user_id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "flag": {
+          "default": 1,
+          "autoincrement": false,
+          "name": "flag",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {
+        "user_id": {
+          "name": "user_id",
+          "columns": [
+            "user_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "server_user_ibfk_1": {
+          "name": "server_user_ibfk_1",
+          "tableFrom": "server_user",
+          "tableTo": "server",
+          "columnsFrom": [
+            "server_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "restrict"
+        },
+        "server_user_ibfk_2": {
+          "name": "server_user_ibfk_2",
+          "tableFrom": "server_user",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "restrict"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "sticker": {
+      "name": "sticker",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "server_id": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "server_id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "content": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "content",
+          "type": "blob",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "flag": {
+          "default": 1,
+          "autoincrement": false,
+          "name": "flag",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {
+        "server_id": {
+          "name": "server_id",
+          "columns": [
+            "server_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "sticker_ibfk_1": {
+          "name": "sticker_ibfk_1",
+          "tableFrom": "sticker",
+          "tableTo": "server",
+          "columnsFrom": [
+            "server_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "restrict"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "sticker_message": {
+      "name": "sticker_message",
+      "columns": {
+        "sticker_id": {
+          "autoincrement": false,
+          "name": "sticker_id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "message_id": {
+          "autoincrement": false,
+          "name": "message_id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {
+        "message_id": {
+          "name": "message_id",
+          "columns": [
+            "message_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "sticker_message_ibfk_1": {
+          "name": "sticker_message_ibfk_1",
+          "tableFrom": "sticker_message",
+          "tableTo": "sticker",
+          "columnsFrom": [
+            "sticker_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "restrict"
+        },
+        "sticker_message_ibfk_2": {
+          "name": "sticker_message_ibfk_2",
+          "tableFrom": "sticker_message",
+          "tableTo": "channel_message",
+          "columnsFrom": [
+            "message_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "restrict"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "user": {
+      "name": "user",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_avt": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "user_avt",
+          "type": "blob",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "user_name": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "user_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "bio": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "bio",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "email": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "email",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "password": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "password",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "create_at": {
+          "default": "'NULL'",
+          "autoincrement": false,
+          "name": "create_at",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "flag": {
+          "default": 1,
+          "autoincrement": false,
+          "name": "flag",
+          "type": "int(11)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    }
+  },
+  "views": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "tables": {},
+    "indexes": {}
+  }
+}
