@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "chat-app-server": "file:",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.35.3",
     "express": "^4.21.1",
