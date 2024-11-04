@@ -1,13 +1,12 @@
 import "dotenv/config";
-import DBconnecter from "./Controller/DBconnecter";
 import express from "express";
 import http from "http";
 import { Server } from "socket.io";
+import User from "./Controller/User"; // Import lớp User
 
 const port = process.env.PORT ?? 3000;
 const app = express();
 app.use(express.json()); // Middleware để parse JSON requests
-// const server = http.createServer(app);
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
@@ -15,52 +14,84 @@ const io = new Server(server, {
   },
 });
 
-// export async function ORMConnect() {
-//   const connection = await mysqlConnect();
-//   const db = drizzle({ client: connection, schema, mode: "planetscale" });
-//   return db;
-// }
-
-// Lấy danh sách user
+// Lấy danh sách người dùng
 app.get("/users", async (req, res) => {
   try {
-    const con = new DBconnecter();
-    const user = await con.select("SELECT * FORM user");
-    res.json(user);
-    con.closeConnect();
-    // const db = await ORMConnect();
-    // const users = await db.select().from(schema.user);
-    // res.json(users);
+    const userController = new User(); // Tạo đối tượng User để thao tác với DB
+    const users = await userController.getAllUsers(); // Sử dụng phương thức lấy danh sách user
+    res.json(users);
   } catch (error) {
     res.status(500).json({ error: "Failed to retrieve users" });
   }
 });
 
-// async function getChannelMessages() {
-//   const db = await ORMConnect();
-//   const messages = await db.select().from(schema.user); // Sử dụng schema.user để tránh lỗi
-//   console.log(messages);
-//   return messages;
-// }
-
-// Thêm user
-// app.post("/users", async (req, res) => {
-//   const { userName, bio, email, password } = req.body;
+// Lấy thông tin một người dùng theo ID
+// app.get("/users/:id", async (req, res) => {
+//   const { id } = req.params;
 //   try {
-//     const db = await ORMConnect();
-//     const result = await db.insert(schema.user).values({
-//       userName,
-//       bio,
-//       email,
-//       password,
-//       createAt: new Date().toISOString(),
-//       flag: 1,
-//     }).execute();
-//     res.json({ message: "User added successfully", userId: result[0].insertId });
+//     const userController = new User();
+//     const user = await userController.getUserById(Number(id));
+//     if (!user) {
+//       return res.status(404).json({ error: "User not found" });
+//     }
+//     res.json(user);
 //   } catch (error) {
-//     res.status(500).json({ error: "Failed to add user" });
+//     res.status(500).json({ error: "Failed to retrieve user" });
 //   }
 // });
+
+// Thêm người dùng mới
+app.post("/users", async (req, res) => {
+  const { name, email, password } = req.body;
+  try {
+    const userController = new User(); // Tạo đối tượng User để thao tác với DB
+    const result = await userController.insert({ 
+      avatar: "", 
+      name, 
+      bio: "", 
+      email, 
+      password, 
+      createAt: new Date(), 
+      flag: 1 
+    }); // Sử dụng phương thức thêm user
+    res.json({ message: "User added successfully", result });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to add user" });
+  }
+});
+
+// Cập nhật thông tin người dùng
+app.put("/users/:id", async (req, res) => {
+  const { id } = req.params;
+  const { name, email, password } = req.body;
+  try {
+    const userController = new User();
+    const result = await userController.update(Number(id), { 
+      id: Number(id), 
+      avatar: "", 
+      name, 
+      email, 
+      bio: "", 
+      password, 
+      createAt: new Date(),
+      flag: 1 });
+    res.json({ message: "User updated successfully", result });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update user" });
+  }
+});
+
+// Xóa người dùng
+app.delete("/users/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const userController = new User();
+    const result = await userController.delete(Number(id));
+    res.json({ message: "User deleted successfully", result });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete user" });
+  }
+});
 
 server.listen(port, () => {
   console.log(`Listening on http://localhost:${port}`);

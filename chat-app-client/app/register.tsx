@@ -12,7 +12,9 @@ const Register = () => {
   const [repassword, setRepassword] = useState("");
 
   const validateEmail = (email: string) => {
-    const regex = new RegExp("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?");
+    const regex = new RegExp(
+      "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
+    );
     return regex.test(email);
   };
 
@@ -34,7 +36,7 @@ const Register = () => {
       Alert.alert("Error", "Password must be at least 8 characters long.");
       return;
     }
-    
+
     // Kiểm tra mật khẩu
     if (password !== repassword) {
       Alert.alert("Error", "Passwords do not match.");
@@ -48,7 +50,7 @@ const Register = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userName,
+          name: userName, // Cập nhật key thành 'name'
           email, // Thêm email vào payload
           password,
         }),
