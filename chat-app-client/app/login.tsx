@@ -45,7 +45,7 @@ const login = () => {
 
   const Submit = () => {
     console.log({ username: username, password: password });
-    router.navigate(`/1/0`);
+    // router.navigate(`/1/0`);
   };
 
   return (
@@ -54,8 +54,8 @@ const login = () => {
         <View style={universalStyles.box}>
           <Text style={styles.text}>Login</Text>
           <InputGroup
-            textContentType="username"
-            label="Username"
+            textContentType="emailAddress"
+            label="Email"
             placeholder=""
             onChangeText={(e) => setUsername(e)}
             value={username}
