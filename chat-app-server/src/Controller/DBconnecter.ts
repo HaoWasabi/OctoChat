@@ -11,15 +11,17 @@ export default class {
       database: process.env.DBNAME,
     });
 
-    this.#con.connect((err) => {
-      if (err) {
-        this.#con = null;
-        return;
-      }
-    });
+  this.#con.connect((err) => {
+    if (err) {
+      console.error("Connection error:", err);
+      this.#con = null;
+      return;
+    }
+    console.log("Connected to the database.");
+  });
   }
 
-  select(querry: string, statementList = []) {
+  select(querry: string, statementList: Array<string | number> = []) {
     if (!this.#con) return null;
     return new Promise((resolve) => {
       this.#con?.query(querry, statementList, (err, result) => {
@@ -29,7 +31,7 @@ export default class {
     });
   }
 
-  insert(querry: string, list: [string | number]) {
+  insert(querry: string, list: Array<string | number>) {
     return new Promise((resolve) => {
       this.#con?.query(querry, list, (err, result: ResultSetHeader) => {
         if (err) resolve(err);
@@ -40,7 +42,7 @@ export default class {
     });
   }
 
-  delete(querry: string, list: [string | number]) {
+  delete(querry: string, list: Array<string | number>) {
     return new Promise((resolve) => {
       this.#con?.query(querry, list, (err, result: ResultSetHeader) => {
         if (err) resolve(err);
@@ -51,7 +53,7 @@ export default class {
     });
   }
 
-  update(querry: string, list: [string | number]) {
+  update(querry: string, list: Array<string | number>) {
     return new Promise((resolve) => {
       this.#con?.query(querry, list, (err, result: ResultSetHeader) => {
         if (err) resolve(err);

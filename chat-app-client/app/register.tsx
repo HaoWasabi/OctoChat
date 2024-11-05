@@ -22,40 +22,65 @@ const Register = () => {
       Alert.alert("Error", "Please fill in all fields.");
       return;
     }
-
+  
     // Kiểm tra email hợp lệ
     if (!validateEmail(email)) {
       Alert.alert("Error", "Please enter a valid email address.");
       return;
     }
-
+  
     // Kiểm tra độ dài mật khẩu tối thiểu 8 kí tự
     if (password.length < 8) {
       Alert.alert("Error", "Password must be at least 8 characters long.");
       return;
     }
-    
+  
     // Kiểm tra mật khẩu
     if (password !== repassword) {
       Alert.alert("Error", "Passwords do not match.");
       return;
     }
-
+  
     try {
-      const response = await fetch("http://localhost:3000/users", { // Thay thế bằng URL của API
+      // Kiểm tra xem email đã tồn tại chưa
+      const emailCheckResponse = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/user/check-email`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const emailCheckData = await emailCheckResponse.json();
+
+      if (!emailCheckResponse.ok) {
+        Alert.alert("Error", emailCheckData.error || "Email check failed");
+        console.error(emailCheckData.error);
+        return;
+      }
+  
+      // Nếu email đã tồn tại, hiển thị thông báo lỗi
+      if (emailCheckData.exists) {
+        Alert.alert("Error", "Email already exists.");
+        console.log("Email already exists.");
+        return;
+      }
+  
+      // Thêm người dùng mới
+      const response = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/user/insert`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userName,
-          email, // Thêm email vào payload
+          name: userName,  // Sử dụng name thay vì userName
+          email,
           password,
         }),
       });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
         Alert.alert("Success", "User registered successfully!");
         router.navigate(`/login`);
@@ -63,10 +88,10 @@ const Register = () => {
         Alert.alert("Error", data.error || "Registration failed");
       }
     } catch (error) {
-      Alert.alert("Error", "An unexpected error occurred");
-      console.error(error);
+      Alert.alert("Error", error instanceof Error ? error.message : String(error));
     }
-  };
+  };  
+  
 
   const styles = StyleSheet.create({
     text: {
@@ -144,7 +169,7 @@ const Register = () => {
           />
           <InputGroup
             textContentType="password" // Thay đổi thành password
-            label="Repassword"
+            label="Confirm Password"
             placeholder=""
             secureTextEntry
             onChangeText={setRepassword}
