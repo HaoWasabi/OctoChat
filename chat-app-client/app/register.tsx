@@ -12,44 +12,50 @@ const Register = () => {
   const [repassword, setRepassword] = useState("");
 
   const validateEmail = (email: string) => {
-    const regex = new RegExp("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?");
+    const regex = new RegExp(
+      "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
+    );
     return regex.test(email);
   };
 
   const handleRegister = async () => {
+    // console.log("register call");
     // Thông tin không được để trống
     if (!userName || !email || !password || !repassword) {
       Alert.alert("Error", "Please fill in all fields.");
       return;
     }
-  
+
     // Kiểm tra email hợp lệ
     if (!validateEmail(email)) {
       Alert.alert("Error", "Please enter a valid email address.");
       return;
     }
-  
+
     // Kiểm tra độ dài mật khẩu tối thiểu 8 kí tự
     if (password.length < 8) {
       Alert.alert("Error", "Password must be at least 8 characters long.");
       return;
     }
-  
+
     // Kiểm tra mật khẩu
     if (password !== repassword) {
       Alert.alert("Error", "Passwords do not match.");
       return;
     }
-  
+
     try {
       // Kiểm tra xem email đã tồn tại chưa
-      const emailCheckResponse = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/user/check-email`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
+      const emailCheckResponse = await fetch(
+        `${process.env.EXPO_PUBLIC_SERVER_URL}/user/check-email`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
 
       const emailCheckData = await emailCheckResponse.json();
 
@@ -58,29 +64,32 @@ const Register = () => {
         console.error(emailCheckData.error);
         return;
       }
-  
+
       // Nếu email đã tồn tại, hiển thị thông báo lỗi
-      if (emailCheckData.exists) {
+      if (!emailCheckData.success) {
         Alert.alert("Error", "Email already exists.");
         console.log("Email already exists.");
         return;
       }
-  
+
       // Thêm người dùng mới
-      const response = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/user/insert`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: userName,  // Sử dụng name thay vì userName
-          email,
-          password,
-        }),
-      });
-  
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_SERVER_URL}/user/insert`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: userName, // Sử dụng name thay vì userName
+            email,
+            password,
+          }),
+        }
+      );
+
       const data = await response.json();
-  
+
       if (response.ok) {
         Alert.alert("Success", "User registered successfully!");
         router.navigate(`/login`);
@@ -88,10 +97,12 @@ const Register = () => {
         Alert.alert("Error", data.error || "Registration failed");
       }
     } catch (error) {
-      Alert.alert("Error", error instanceof Error ? error.message : String(error));
+      Alert.alert(
+        "Error",
+        error instanceof Error ? error.message : String(error)
+      );
     }
-  };  
-  
+  };
 
   const styles = StyleSheet.create({
     text: {
