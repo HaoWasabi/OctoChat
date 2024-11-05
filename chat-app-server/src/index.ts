@@ -1,8 +1,9 @@
 import "dotenv/config";
-import express from "express";
+import express, { Request, Response } from 'express';
 import http from "http";
 import { Server } from "socket.io";
 import User from "./Controller/User"; // Import lớp User
+import DBconnecter from "./Controller/DBconnecter";
 
 const port = process.env.PORT ?? 3000;
 const app = express();
@@ -15,18 +16,20 @@ const io = new Server(server, {
 });
 
 // Lấy danh sách người dùng
-app.get("/users", async (req, res) => {
+app.get("/user/list", async (req, res) => {
   try {
     const userController = new User(); // Tạo đối tượng User để thao tác với DB
     const users = await userController.getAllUsers(); // Sử dụng phương thức lấy danh sách user
     res.json(users);
+    console.log("Danh sách user: " + users);
   } catch (error) {
     res.status(500).json({ error: "Failed to retrieve users" });
   }
 });
 
+
 // Lấy thông tin một người dùng theo ID
-// app.get("/users/:id", async (req, res) => {
+// app.get("/user/:id", async (req: Request<{ id: string }>, res: Response) => {
 //   const { id } = req.params;
 //   try {
 //     const userController = new User();
@@ -41,10 +44,12 @@ app.get("/users", async (req, res) => {
 // });
 
 // Thêm người dùng mới
-app.post("/users", async (req, res) => {
+app.post("/user/insert", async (req, res) => {
   const { name, email, password } = req.body;
+  console.log(name,email,password);
   try {
     const userController = new User(); // Tạo đối tượng User để thao tác với DB
+    
     const result = await userController.insert({ 
       avatar: "", 
       name, 
@@ -60,8 +65,22 @@ app.post("/users", async (req, res) => {
   }
 });
 
+// Kiểm tra xem email đã tồn tại hay chưa
+app.post("/user/check-email", async (req, res) => {
+  const { email } = req.body;
+  try {
+    const userController = new User();
+    const exists = await userController.checkEmailExists(email);
+    res.json({ exists });
+    console.log("Email đã tồn tại: " + exists);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to check email" });
+  }
+});
+
+
 // Cập nhật thông tin người dùng
-app.put("/users/:id", async (req, res) => {
+app.put("/user/update/:id", async (req, res) => {
   const { id } = req.params;
   const { name, email, password } = req.body;
   try {
@@ -82,7 +101,7 @@ app.put("/users/:id", async (req, res) => {
 });
 
 // Xóa người dùng
-app.delete("/users/:id", async (req, res) => {
+app.delete("/user/delete/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const userController = new User();
@@ -94,5 +113,6 @@ app.delete("/users/:id", async (req, res) => {
 });
 
 server.listen(port, () => {
-  console.log(`Listening on http://localhost:${port}`);
+  console.log(`Listening on http://localhost:${port}`); 
+  console.log(`list user: http://localhost:${port}/user/list`);
 });

@@ -11,12 +11,14 @@ export default class {
       database: process.env.DBNAME,
     });
 
-    this.#con.connect((err) => {
-      if (err) {
-        this.#con = null;
-        return;
-      }
-    });
+  this.#con.connect((err) => {
+    if (err) {
+      console.error("Connection error:", err);
+      this.#con = null;
+      return;
+    }
+    console.log("Connected to the database.");
+  });
   }
 
   select(querry: string, statementList: Array<string | number> = []) {

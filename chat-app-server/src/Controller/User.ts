@@ -20,7 +20,7 @@ export default class User {
 
   // Thêm user mới vào database
   async insert(user: UserData) {
-    const query = "INSERT INTO users (user_name, bio, email, password, create_at, flag) VALUES (?, ?, ?, ?, ?, ?)";
+    const query = "INSERT INTO user (user_name, bio, email, password, create_at, flag) VALUES (?, ?, ?, ?, ?, ?)";
     const values: [string, string, string, string, string, number] = [user.name, user.bio, user.email, user.password, user.createAt.toISOString(), user.flag];
 
     try {
@@ -37,7 +37,7 @@ export default class User {
   async update(userID: number, user: UserData) {
     if (!userID) throw new Error("User ID is required for update");
 
-    const query = "UPDATE users SET user_avt = ?, user_name = ?, email = ?, password = ?, cread_at = ?, flag = ? WHERE id = ?";
+    const query = "UPDATE user SET user_avt = ?, user_name = ?, email = ?, password = ?, cread_at = ?, flag = ? WHERE id = ?";
     const values: [string, string, string, string, string, number, number] = [user.avatar, user.name, user.email, user.password, user.createAt.toISOString(), user.flag, userID];
 
     try {
@@ -52,7 +52,7 @@ export default class User {
 
   // Xóa user theo ID
   async delete(userId: number) {
-    const query = "DELETE FROM users WHERE id = ?";
+    const query = "DELETE FROM user WHERE id = ?";
     const values: [number] = [userId];
 
     try {
@@ -67,7 +67,7 @@ export default class User {
 
     // Lấy thông tin user theo ID
     async getUserById(userId: number) {
-        const query = "SELECT * FROM users WHERE id = ?";
+        const query = "SELECT * FROM user WHERE id = ?";
         const values: [number] = [userId];
     
         try {
@@ -82,16 +82,27 @@ export default class User {
 
     // Lấy danh sách user
     async getAllUsers() {
-        const query = "SELECT * FROM users";
+        const query = "SELECT * FROM user";
     
         try {
             const result = await this.db.select(query);
-            console.log("Users retrieved successfully:", result);
+            console.log("User retrieved successfully:", result);
             return result;
         } catch (error) {
-            console.error("Error retrieving users:", error);
+            console.error("Error retrieving user:", error);
             throw error;
         }
+    }
+
+    async checkEmailExists(email: string) {
+      const query = "SELECT * FROM user WHERE email = ?";
+      try {
+        const row = await this.db.select(query, [email]); // Giả sử bạn có db là kết nối đến cơ sở dữ liệu
+        return row; // Trả về true nếu email đã tồn tại
+      } catch (error) {
+        console.error("Error checking email:", error);
+      throw error;
+      }
     }
 
   // Đóng kết nối database
