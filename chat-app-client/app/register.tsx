@@ -19,7 +19,7 @@ const Register = () => {
   };
 
   const handleRegister = async () => {
-    // console.log("register call");
+    console.log("register call");
     // Thông tin không được để trống
     if (!userName || !email || !password || !repassword) {
       Alert.alert("Error", "Please fill in all fields.");

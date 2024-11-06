@@ -22,7 +22,7 @@ app.get("/user/list", async (req, res) => {
     const userController = new User(); // Tạo đối tượng User để thao tác với DB
     const users = await userController.getAllUsers(); // Sử dụng phương thức lấy danh sách user
     res.json(users);
-    userController.close();
+    userController.closeConnection();
     console.log("Danh sách user: " + users);
   } catch (error) {
     res.status(500).json({ error: "Failed to retrieve users" });
@@ -46,7 +46,7 @@ app.post("/user/insert", async (req, res) => {
       flag: 1,
     }); // Sử dụng phương thức thêm user
     res.json({ message: "User added successfully", result });
-    userController.close();
+    userController.closeConnection();
   } catch (error) {
     res.status(500).json({ error: "Failed to add user" });
   }
@@ -61,11 +61,11 @@ app.post("/user/check-email", async (req, res) => {
     const exists = await userController.checkEmailExists(email);
     if (exists) {
       res.send({ success: false, message: "email đã tồn tại" });
-      userController.close();
+      userController.closeConnection();
       return;
     }
     res.send({ success: true, message: "email chưa tồn tại" });
-    userController.close();
+    userController.closeConnection();
     // console.log("Email đã tồn tại: " + exists);
   } catch (error) {
     res.status(500).json({ error: "Failed to check email" });
@@ -89,7 +89,7 @@ app.put("/user/update/:id", async (req, res) => {
       flag: 1,
     });
     res.json({ message: "User updated successfully", result });
-    userController.close();
+    userController.closeConnection();
   } catch (error) {
     res.status(500).json({ error: "Failed to update user" });
   }
@@ -102,11 +102,29 @@ app.delete("/user/delete/:id", async (req, res) => {
     const userController = new User();
     const result = await userController.delete(Number(id));
     res.json({ message: "User deleted successfully", result });
-    userController.close();
+    userController.closeConnection();
   } catch (error) {
     res.status(500).json({ error: "Failed to delete user" });
   }
 });
+
+// Login API endpoint
+app.post("/user/login", async (req, res) => {
+  const {email, password} = req.body;
+  try {
+    const userController = new User();
+    const result = await userController.checkUserWhenLogin(email, password);
+    if(result.length <= 0) {
+      res.json({message: "Login failed!"});
+      userController.closeConnection();
+      return;
+    }
+    res.json({message: "Login successfully!", result});
+    userController.closeConnection();
+  } catch (error) {
+    res.json({message: "Failed to login!"});
+  }
+})
 
 server.listen(port, () => {
   console.log(`Listening on http://localhost:${port}`);
