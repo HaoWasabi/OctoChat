@@ -45,7 +45,7 @@ const login = () => {
 
   const Submit = () => {
     console.log({ username: username, password: password });
-    // router.navigate(`/1/0`);
+    router.navigate(`/1/0`);
   };
 
   return (

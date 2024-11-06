@@ -34,7 +34,7 @@ export default class User {
     try {
       const result = await this.db.insert(query, values);
       console.log("User added successfully:", result);
-      this.close();
+      // this.close();
       return result;
     } catch (error) {
       console.error("Error adding user:", error);
@@ -61,7 +61,7 @@ export default class User {
     try {
       const result = await this.db.update(query, values);
       console.log("User updated successfully:", result);
-      this.close();
+      // this.close();
       return result;
     } catch (error) {
       console.error("Error updating user:", error);
@@ -77,7 +77,7 @@ export default class User {
     try {
       const result = await this.db.delete(query, values);
       console.log("User deleted successfully:", result);
-      this.close();
+      // this.close();
       return result;
     } catch (error) {
       console.error("Error deleting user:", error);
@@ -93,7 +93,7 @@ export default class User {
     try {
       const result = await this.db.select(query, values);
       console.log("User retrieved successfully:", result);
-      this.close();
+      // this.close();
       return result;
     } catch (error) {
       console.error("Error retrieving user:", error);
@@ -108,7 +108,7 @@ export default class User {
     try {
       const result = await this.db.select(query);
       console.log("User retrieved successfully:", result);
-      this.close();
+      // this.close();
       return result;
     } catch (error) {
       console.error("Error retrieving user:", error);
@@ -120,9 +120,9 @@ export default class User {
     const query = "SELECT * FROM user WHERE email = ?";
     try {
       const row = await this.db.select(query, [email]); // Giả sử bạn có db là kết nối đến cơ sở dữ liệu
-      this.close();
+      // this.close();
       if ((row as []).length > 0) return true;
-      return false; // Trả về true nếu email đã tồn tại
+      return false;
     } catch (error) {
       console.error("Error checking email:", error);
       throw error;
