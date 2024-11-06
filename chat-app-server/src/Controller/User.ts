@@ -101,6 +101,24 @@ export default class User {
     }
   }
 
+  async checkUserWhenLogin(email: string, password: string) {
+    const query = "SELECT * FROM user WHERE email = ? AND password = ?";
+    const values: [string, string] = [email, password];
+
+    try {
+      const result = await this.db.select(query, values) as Array<UserData>;
+      if(result.length <= 0){
+        console.log("Failed to retrieved email and password!");
+        return result;
+      }
+      console.log("User's email and password retrieved successfully!\n", result);
+      return result;
+    } catch (error) {
+      console.error("Error retrieving email and password:", error);
+      throw error;
+    }
+  }
+
   // Lấy danh sách user
   async getAllUsers() {
     const query = "SELECT * FROM user";
@@ -130,7 +148,7 @@ export default class User {
   }
 
   // Đóng kết nối database
-  close() {
+  closeConnection() {
     this.db.closeConnect();
   }
 }
