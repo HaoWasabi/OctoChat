@@ -22,6 +22,7 @@ app.get("/user/list", async (req, res) => {
     const userController = new User(); // Tạo đối tượng User để thao tác với DB
     const users = await userController.getAllUsers(); // Sử dụng phương thức lấy danh sách user
     res.json(users);
+    userController.close();
     console.log("Danh sách user: " + users);
   } catch (error) {
     res.status(500).json({ error: "Failed to retrieve users" });
@@ -45,6 +46,7 @@ app.post("/user/insert", async (req, res) => {
       flag: 1,
     }); // Sử dụng phương thức thêm user
     res.json({ message: "User added successfully", result });
+    userController.close();
   } catch (error) {
     res.status(500).json({ error: "Failed to add user" });
   }
@@ -59,9 +61,11 @@ app.post("/user/check-email", async (req, res) => {
     const exists = await userController.checkEmailExists(email);
     if (exists) {
       res.send({ success: false, message: "email đã tồn tại" });
+      userController.close();
       return;
     }
     res.send({ success: true, message: "email chưa tồn tại" });
+    userController.close();
     // console.log("Email đã tồn tại: " + exists);
   } catch (error) {
     res.status(500).json({ error: "Failed to check email" });
@@ -85,6 +89,7 @@ app.put("/user/update/:id", async (req, res) => {
       flag: 1,
     });
     res.json({ message: "User updated successfully", result });
+    userController.close();
   } catch (error) {
     res.status(500).json({ error: "Failed to update user" });
   }
@@ -97,6 +102,7 @@ app.delete("/user/delete/:id", async (req, res) => {
     const userController = new User();
     const result = await userController.delete(Number(id));
     res.json({ message: "User deleted successfully", result });
+    userController.close();
   } catch (error) {
     res.status(500).json({ error: "Failed to delete user" });
   }
