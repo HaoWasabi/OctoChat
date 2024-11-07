@@ -27,7 +27,7 @@ export default class User {
       user.bio,
       user.email,
       user.password,
-      user.createAt.toISOString(),
+      user.createAt.toISOString().slice(0, 19).replace("T", " "),
       user.flag,
     ];
 

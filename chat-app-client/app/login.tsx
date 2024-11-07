@@ -1,16 +1,10 @@
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableHighlight,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { universalStyles } from "../assets/styles/styles";
 import { InputGroup } from "../components/InputGroup";
 import { Button } from "../components/Button";
 import { useState } from "react";
-import { Link, Redirect, router } from "expo-router";
+import { Link } from "expo-router";
+import { useSession } from "../components/Seesionprovider";
 
 const login = () => {
   const styles = StyleSheet.create({
@@ -42,10 +36,11 @@ const login = () => {
   });
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { session, signIn } = useSession();
 
   const Submit = () => {
-    console.log({ username: username, password: password });
-    router.navigate(`/1/0`);
+    // console.log({ username: username, password: password });
+    signIn(username, password);
   };
 
   return (

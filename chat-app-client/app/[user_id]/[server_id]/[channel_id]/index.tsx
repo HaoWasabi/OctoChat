@@ -1,5 +1,14 @@
-import { router, useLocalSearchParams } from "expo-router";
-import {  Image ,SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Redirect, router, useLocalSearchParams } from "expo-router";
+import {
+  Alert,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import {
   Directions,
   Gesture,
@@ -8,7 +17,7 @@ import {
 import { socket } from "../../../../utility/socket";
 import { useEffect, useState } from "react";
 import { Button } from "../../../../components/Button";
-import React from 'react';
+import { useSession } from "../../../../components/Seesionprovider";
 // import { Image } from 'expo-image';
 
 const styles = StyleSheet.create({
@@ -26,37 +35,37 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    height: '100%',
-    width: '100%',
+    height: "100%",
+    width: "100%",
   },
   top_area: {
-    width: '100%',
-    height: '90%',
-    backgroundColor: '#353A3F',
-    paddingBottom: 4
+    width: "100%",
+    height: "90%",
+    backgroundColor: "#353A3F",
+    paddingBottom: 4,
   },
   bottom_area: {
-    width: '100%',
-    height: '10%',
-    display: 'flex',
+    width: "100%",
+    height: "10%",
+    display: "flex",
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
   },
   input_message: {
-    width: '82%',
-    height: '80%',
-    backgroundColor: '#383A40',
+    width: "82%",
+    height: "80%",
+    backgroundColor: "#383A40",
     marginLeft: 5,
     padding: 10,
     borderRadius: 10,
-    overflow: 'scroll',
-    color: '#BBBEC2',
+    overflow: "scroll",
+    color: "#BBBEC2",
   },
   send_message_btn: {
-    width: '15%',
-    height: '80%',
+    width: "15%",
+    height: "80%",
     backgroundColor: "#5764F1",
     marginLeft: "auto",
     marginRight: "auto",
@@ -65,8 +74,8 @@ const styles = StyleSheet.create({
   },
   send_message_icon: {
     flex: 1,
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   container: {
     width: "100%",
@@ -74,7 +83,6 @@ const styles = StyleSheet.create({
     // display: "flex",
     // flexDirection: "column",
     // justifyContent: "flex-end"
-    
   },
   message_container: {
     padding: 10,
@@ -88,12 +96,18 @@ const styles = StyleSheet.create({
     color: "#FFF",
     fontSize: 16,
     marginLeft: 10,
-    marginTop: 3
+    marginTop: 3,
   },
 });
 
 const index = () => {
   const { user_id, server_id, channel_id } = useLocalSearchParams();
+  const { session } = useSession();
+  if (!session) {
+    Alert.alert("Lỗi", "Vui lòng đăng nhập");
+    return <Redirect href="/" />;
+  }
+  console.log(JSON.parse(session).id);
   // const [isConnect, setIsConnect] = useState(socket.connected);
 
   // useEffect(() => {
@@ -123,7 +137,7 @@ const index = () => {
   }
 
   const fling = Gesture.Fling().direction(Directions.RIGHT).onFinalize(back);
-  const send_message_btn_icon = require ('../../../../assets/images/send_message_icon.png');
+  const send_message_btn_icon = require("../../../../assets/images/send_message_icon.png");
 
   return (
     <>
@@ -131,84 +145,30 @@ const index = () => {
         
       </GestureDetector> */}
       <View style={styles.center}>
-          <View style={styles.top_area}>
-            <ScrollView style={styles.container}>
+        <View style={styles.top_area}>
+          <ScrollView style={styles.container}>
             <View style={styles.message_container}>
-                <Text style={styles.user_name}>This is me</Text>
-                <Text style={styles.message_content}>My own chat</Text>
-              </View>
-              <View style={styles.message_container}>
-                <Text style={styles.user_name}>David</Text>
-                <Text style={styles.message_content}>This is a chat channel</Text>
-              </View>
-              <View style={styles.message_container}>
-                <Text style={styles.user_name}>Andrew</Text>
-                <Text style={styles.message_content}>My name is Dumbass, And I say hey, yeah, yeah, yeah yay
-Hey, yay, yay
-I said hey, what's goin' on?</Text>
-              </View>
-              <View style={styles.message_container}>
-                <Text style={styles.user_name}>Michael</Text>
-                <Text style={styles.message_content}>Hello there</Text>
-              </View>
-              <View style={styles.message_container}>
-                <Text style={styles.user_name}>Steve</Text>
-                <Text style={styles.message_content}>Mai cac?</Text>
-              </View>
-              <View style={styles.message_container}>
-                <Text style={styles.user_name}>Steve</Text>
-                <Text style={styles.message_content}>Mai cac?</Text>
-              </View>
-              <View style={styles.message_container}>
-                <Text style={styles.user_name}>Steve</Text>
-                <Text style={styles.message_content}>Mai cac?</Text>
-              </View>
-              <View style={styles.message_container}>
-                <Text style={styles.user_name}>Steve</Text>
-                <Text style={styles.message_content}>Mai cac?</Text>
-              </View>
-
-              <View style={styles.message_container}>
-                <Text style={styles.user_name}>Steve</Text>
-                <Text style={styles.message_content}>Mai cac?</Text>
-              </View>
-              <View style={styles.message_container}>
-                <Text style={styles.user_name}>Steve</Text>
-                <Text style={styles.message_content}>Mai cac?</Text>
-              </View>
-              <View style={styles.message_container}>
-                <Text style={styles.user_name}>Steve</Text>
-                <Text style={styles.message_content}>Mai cac?</Text>
-              </View>
-              <View style={styles.message_container}>
-                <Text style={styles.user_name}>Steve</Text>
-                <Text style={styles.message_content}>Mai cac?</Text>
-              </View>
-              <View style={styles.message_container}>
-                <Text style={styles.user_name}>Steve</Text>
-                <Text style={styles.message_content}>Mai cac?</Text>
-              </View>
-              <View style={styles.message_container}>
-                <Text style={styles.user_name}>Steve</Text>
-                <Text style={styles.message_content}>Mai cac?</Text>
-              </View>
-              <View style={styles.message_container}>
-                <Text style={styles.user_name}>Steve</Text>
-                <Text style={styles.message_content}>Mai cac?</Text>
-              </View><View style={styles.message_container}>
-                <Text style={styles.user_name}>Steve</Text>
-                <Text style={styles.message_content}>Dit me may</Text>
-              </View>
-            </ScrollView>
-          </View>
-          <View style={styles.bottom_area}>
-            <TextInput style={styles.input_message} placeholder="Put your text here" placeholderTextColor="#BBBEC2"></TextInput>
-            <Button buttonStyle={styles.send_message_btn} textStyle={styles.blue}>
-              {/* <Image source={send_message_btn_icon} style={styles.send_message_icon} resizeMode="cover"></Image> */}
-              Send
-            </Button>
-          </View>
+              <Text style={styles.user_name}>This is me</Text>
+              <Text style={styles.message_content}>My own chat</Text>
+            </View>
+            <View style={styles.message_container}>
+              <Text style={styles.user_name}>This is me</Text>
+              <Text style={styles.message_content}>My own chat 2</Text>
+            </View>
+          </ScrollView>
         </View>
+        <View style={styles.bottom_area}>
+          <TextInput
+            style={styles.input_message}
+            placeholder="Put your text here"
+            placeholderTextColor="#BBBEC2"
+          ></TextInput>
+          <Button buttonStyle={styles.send_message_btn} textStyle={styles.blue}>
+            {/* <Image source={send_message_btn_icon} style={styles.send_message_icon} resizeMode="cover"></Image> */}
+            Send
+          </Button>
+        </View>
+      </View>
     </>
   );
 };

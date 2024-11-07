@@ -4,6 +4,7 @@ import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
 import User from "./Controller/User"; // Import lớp User
+import DBconnecter from "./Controller/DBconnecter";
 
 const port = process.env.PORT ?? 3000;
 const app = express();
@@ -110,21 +111,56 @@ app.delete("/user/delete/:id", async (req, res) => {
 
 // Login API endpoint
 app.post("/user/login", async (req, res) => {
-  const {email, password} = req.body;
+  const { email, password } = req.body;
   try {
     const userController = new User();
     const result = await userController.checkUserWhenLogin(email, password);
-    if(result.length <= 0) {
-      res.json({message: "Login failed!"});
+    if (result.length <= 0) {
+      res.json({ message: "Login failed!" });
       userController.closeConnection();
       return;
     }
-    res.json({message: "Login successfully!", result});
+    res.json({ message: "Login successfully!", result });
     userController.closeConnection();
   } catch (error) {
-    res.json({message: "Failed to login!"});
+    res.json({ message: "Failed to login!" });
   }
-})
+});
+
+app.get("/:server_id/channel/", async (req, res) => {
+  try {
+    const { server_id } = req.params;
+    const conn = new DBconnecter();
+    const result = await conn.select(
+      "SELECT * FROM server_channel Where server_id = ?",
+      [server_id]
+    );
+    // console.log(result);
+    res.json(result);
+    conn.closeConnect();
+  } catch (error) {
+    console.log(error);
+    res.json({ message: "something wrong happen" });
+  }
+});
+
+app.get("/channel/:channel_id/message", async (req, res) => {
+  try {
+    const { channel_id } = req.params;
+    const conn = new DBconnecter();
+    const result = await conn.select(
+      `SELECT * FROM(
+      SELECT channel_message.id,user_name,message,update_at FROM channel_message,user 
+      WHERE channel_message.user_id = user.id AND channel_message.channel_id = ? 
+      ORDER BY channel_message.id DESC LIMIT ?,?) c ORDER BY id`,
+      [channel_id, 0, 50]
+    );
+    res.json(result);
+  } catch (error) {
+    console.log(error);
+    res.json({ message: "something wrong happen" });
+  }
+});
 
 server.listen(port, () => {
   console.log(`Listening on http://localhost:${port}`);

@@ -3,6 +3,8 @@ import { ThemeProvider } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 
+import SessionProvider from "@/components/Seesionprovider";
+
 import "react-native-reanimated";
 
 import {
@@ -42,22 +44,26 @@ export default function RootLayout() {
   return (
     <>
       <GestureHandlerRootView>
-        <ThemeProvider value={GreyTheme}>
-          <Stack>
-            <Stack.Screen name="login" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="register"
-              options={{ headerShown: false, animation: "slide_from_bottom" }}
-            />
-            <Stack.Screen
-              name="[user_id]"
-              options={{ headerShown: false, animation: "none" }}
-            />
-            <Stack.Screen 
-            name="userInfo" 
-            options={{ headerShown: false, animation: "slide_from_right" }}/>
-          </Stack>
-        </ThemeProvider>
+        <SessionProvider>
+          <ThemeProvider value={GreyTheme}>
+            <Stack>
+              <Stack.Screen name="login" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="register"
+                options={{ headerShown: false, animation: "slide_from_bottom" }}
+              />
+              <Stack.Screen
+                name="[user_id]"
+                options={{ headerShown: false, animation: "none" }}
+              />
+              <Stack.Screen 
+                name="userInfo" 
+                options={{ headerShown: false, animation: "slide_from_right" }}/>
+              </Stack>
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          </ThemeProvider>
+        </SessionProvider>
       </GestureHandlerRootView>
     </>
   );
