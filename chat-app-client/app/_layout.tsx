@@ -53,7 +53,9 @@ export default function RootLayout() {
               name="[user_id]"
               options={{ headerShown: false, animation: "none" }}
             />
-            <Stack.Screen name="+not-found" />
+            <Stack.Screen 
+            name="userInfo" 
+            options={{ headerShown: false, animation: "slide_from_right" }}/>
           </Stack>
         </ThemeProvider>
       </GestureHandlerRootView>
