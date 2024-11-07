@@ -56,10 +56,10 @@ export default function RootLayout() {
                 name="[user_id]"
                 options={{ headerShown: false, animation: "none" }}
               />
-              <Stack.Screen 
-                name="userInfo" 
-                options={{ headerShown: false, animation: "slide_from_right" }}/>
-              </Stack>
+              <Stack.Screen
+                name="userInfo"
+                options={{ headerShown: false, animation: "slide_from_right" }}
+              />
               <Stack.Screen name="+not-found" />
             </Stack>
           </ThemeProvider>
