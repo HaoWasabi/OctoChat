@@ -34,7 +34,7 @@ export default function RootLayout() {
 
   return (
     <>
-      <Tabs>
+      <Tabs >
         <Tabs.Screen
           name="[server_id]"
           options={{
