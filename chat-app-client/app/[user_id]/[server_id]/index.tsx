@@ -1,6 +1,10 @@
-import { useLocalSearchParams } from "expo-router";
-import { SafeAreaView, StyleSheet, Text } from "react-native";
+import { Redirect, useLocalSearchParams } from "expo-router";
+import { Alert, SafeAreaView, StyleSheet, Text } from "react-native";
 import { Link } from "expo-router";
+import { Button } from "../../../components/Button";
+import { useSession } from "../../../components/Seesionprovider";
+import { useEffect, useState } from "react";
+import { type serverChannel } from "../../../types/model";
 
 const styles = StyleSheet.create({
   text: {
@@ -22,27 +26,59 @@ const styles = StyleSheet.create({
 
 const index = () => {
   const { user_id, server_id } = useLocalSearchParams();
+  const { signOut } = useSession();
+  const [channelList, setChannelList] = useState(Array<serverChannel>);
 
-  const arr = [0];
-  arr.pop();
-  for (let i = 1; i <= 10; i++) {
-    arr.push(i);
-  }
+  const getChannelList = async () => {
+    try {
+      const res = await fetch(
+        `${process.env.EXPO_PUBLIC_SERVER_URL}/${server_id}/channel`
+      );
+      if (!res.ok) {
+        Alert.alert("Lỗi hệ thống vui lòng thử lại sau");
+        return <Redirect href={"/login"} />;
+      }
 
-  const listChannel = arr.map((item) => (
+      const json = (await res.json()) as Array<serverChannel>;
+
+      setChannelList(json);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getChannelList();
+  }, []);
+
+  // const arr = [0];
+  // arr.pop();
+  // for (let i = 1; i <= 10; i++) {
+  //   arr.push(i);
+  // }
+
+  const listChannel = channelList.map((item) => (
     <Link
       style={styles.blue}
-      key={item}
+      key={item.id}
       // href={"/" + user_id + "/" + server_id + "/" + item}
-      href={`/${user_id}/${server_id}/${item}`}
+      href={`/${user_id}/${server_id}/${item.id}`}
     >
-      go to channel {item}
+      go to {item.channel_name}
     </Link>
   ));
 
   return (
     <>
       <SafeAreaView style={styles.center}>
+        <Button
+          style={{ backgroundColor: "blue" }}
+          onPress={() => {
+            signOut();
+          }}
+        >
+          click me
+        </Button>
         <Text style={styles.text}>
           hi this is home of {user_id} in {server_id}
         </Text>

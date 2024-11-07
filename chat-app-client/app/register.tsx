@@ -4,19 +4,13 @@ import { InputGroup } from "../components/InputGroup";
 import { Button } from "../components/Button";
 import { universalStyles } from "../assets/styles/styles";
 import { Link, router } from "expo-router";
+import { validateEmail } from "../utility/checkValidate";
 
 const Register = () => {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repassword, setRepassword] = useState("");
-
-  const validateEmail = (email: string) => {
-    const regex = new RegExp(
-      "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
-    );
-    return regex.test(email);
-  };
 
   const handleRegister = async () => {
     console.log("register call");
