@@ -5,6 +5,7 @@ import http from "http";
 import { Server } from "socket.io";
 import User from "./Controller/User"; // Import lớp User
 import DBconnecter from "./Controller/DBconnecter";
+import { insertType } from "./types/dbTypes";
 
 const port = process.env.PORT ?? 3000;
 const app = express();
@@ -15,7 +16,24 @@ const io = new Server(server, {
     origin: "*",
   },
 });
+
+const toMysqlDateTime = (date: Date) =>
+  date.toISOString().slice(0, 19).replace("T", " ");
+
 app.use(cors()); //alow cors(Cross Origin Resource Sharing)
+
+io.on("connection", (socket) => {
+  console.log(`an user connected with id: ${socket.id}`);
+  socket.on("joinRoom", (data) => {
+    socket.join(data);
+    console.log(`join room ${data}`);
+  });
+});
+
+io.on("disconnection", (socket) => {
+  console.log(`an user connected with id: ${socket.id}`);
+  console.log(socket.rooms);
+});
 
 // Lấy danh sách người dùng
 app.get("/user/list", async (req, res) => {
@@ -156,6 +174,48 @@ app.get("/channel/:channel_id/message", async (req, res) => {
       [channel_id, 0, 50]
     );
     res.json(result);
+    conn.closeConnect();
+  } catch (error) {
+    console.log(error);
+    res.json({ message: "something wrong happen" });
+  }
+});
+
+app.post("/channel/:channel_id/message/send", async (req, res) => {
+  const { user_id, user_name, channel_id, message } = req.body;
+  if (!user_id || !user_name || !message || !channel_id) {
+    res.send({ success: false, message: "Thiếu thông tin ở body" });
+    return;
+  }
+  console.log(req.body);
+  try {
+    const conn = new DBconnecter();
+
+    const result = (await conn.insert(
+      `INSERT INTO channel_message (channel_id, user_id, channel_type, message, create_at, update_at, flag)
+     VALUES (?, ?, ?, ?, '2024-11-08 13:01:01', '2024-11-08 13:01:01', '1');`,
+      [
+        channel_id,
+        user_id,
+        1,
+        message,
+        toMysqlDateTime(new Date()),
+        toMysqlDateTime(new Date()),
+      ]
+    )) as insertType;
+    if (result.status != 200) {
+      res.send({ message: "Insert không thành công", success: false });
+      return;
+    }
+    const newMessage = await conn.select(
+      `SELECT channel_message.id,user_name,message,update_at FROM channel_message,user 
+      WHERE channel_message.user_id = user.id AND channel_message.channel_id = ? 
+      ORDER BY channel_message.id DESC LIMIT ?`,
+      [channel_id, 1]
+    );
+    res.send({ message: "gửi tin nhắn thành công", success: true });
+    console.log(newMessage);
+    io.to(`${channel_id}`).emit("messageRecive", newMessage);
   } catch (error) {
     console.log(error);
     res.json({ message: "something wrong happen" });
