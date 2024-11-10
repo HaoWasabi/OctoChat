@@ -16,25 +16,25 @@ const Register = () => {
     console.log("register call");
     // Thông tin không được để trống
     if (!userName || !email || !password || !repassword) {
-      Alert.alert("Error", "Please fill in all fields.");
+      Alert.alert("Lỗi", "Không được để trống.");
       return;
     }
 
     // Kiểm tra email hợp lệ
     if (!validateEmail(email)) {
-      Alert.alert("Error", "Please enter a valid email address.");
+      Alert.alert("Lỗi", "Hãy nhập email hợp lệ.");
       return;
     }
 
     // Kiểm tra độ dài mật khẩu tối thiểu 8 kí tự
     if (password.length < 8) {
-      Alert.alert("Error", "Password must be at least 8 characters long.");
+      Alert.alert("Error", "Mật khẩu ít nhất 8 kí tự.");
       return;
     }
 
     // Kiểm tra mật khẩu
     if (password !== repassword) {
-      Alert.alert("Error", "Passwords do not match.");
+      Alert.alert("Error", "Mật khẩu không trùng khớp");
       return;
     }
 
@@ -54,15 +54,15 @@ const Register = () => {
       const emailCheckData = await emailCheckResponse.json();
 
       if (!emailCheckResponse.ok) {
-        Alert.alert("Error", emailCheckData.error || "Email check failed");
+        Alert.alert("Lỗi", emailCheckData.error || "Kiểm tra email thất bại.");
         console.error(emailCheckData.error);
         return;
       }
 
       // Nếu email đã tồn tại, hiển thị thông báo lỗi
       if (!emailCheckData.success) {
-        Alert.alert("Error", "Email already exists.");
-        console.log("Email already exists.");
+        Alert.alert("Lỗi", "Email đã tồn tại.");
+        console.log("Email đã tồn tại.");
         return;
       }
 
@@ -85,10 +85,10 @@ const Register = () => {
       const data = await response.json();
 
       if (response.ok) {
-        Alert.alert("Success", "User registered successfully!");
+        Alert.alert("Thành công", "Tài khoản được tạo thành công!");
         router.navigate(`/login`);
       } else {
-        Alert.alert("Error", data.error || "Registration failed");
+        Alert.alert("Lỗi", data.error || "Đăng ký thất bại.");
       }
     } catch (error) {
       Alert.alert(
@@ -167,14 +167,14 @@ const Register = () => {
           />
           <InputGroup
             textContentType="password"
-            label="Password"
+            label="Mật khẩu"
             placeholder=""
             secureTextEntry
             onChangeText={setPassword}
           />
           <InputGroup
             textContentType="password" // Thay đổi thành password
-            label="Confirm Password"
+            label="Nhập lại mật khẩu"
             placeholder=""
             secureTextEntry
             onChangeText={setRepassword}

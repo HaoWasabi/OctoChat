@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
@@ -29,6 +29,57 @@ app.get("/user/list", async (req, res) => {
     res.status(500).json({ error: "Failed to retrieve users" });
   }
 });
+
+// Lấy thông tin người dùng theo email
+app.get("/user/get/email/:email", async (req, res) => {
+  const { email } = req.params;
+  if (!email) {
+    res.status(400).json({ error: "Email is required" });
+    return;
+  }
+  const userController = new User(); // Tạo đối tượng User để thao tác với DB
+  try {
+    const user = await userController.getUserByEmail(email); // Lấy thông tin user theo email
+
+    if (!user) {
+      console.log("User not found.")
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+    
+    res.json(user);
+    console.log(user);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to retrieve user" });
+  } finally {
+    // Đóng kết nối sau khi hoàn thành hoặc khi có lỗi
+    userController.closeConnection(); 
+  }
+});
+
+// Lấy thông tin người dùng theo id
+app.get("/user/get/id/:id", async (req, res) => {
+  const { id } = req.params;
+  const userController = new User(); // Tạo đối tượng User để thao tác với DB
+  try {
+    const user = await userController.getUserById(Number(id)); // Lấy thông tin user theo id
+
+    if (!user) {
+      console.log("User not found.")
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+    
+    res.json(user);
+    console.log(user);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to retrieve user" });
+  } finally {
+    // Đóng kết nối sau khi hoàn thành hoặc khi có lỗi
+    userController.closeConnection(); 
+  }
+});
+
 
 // Thêm người dùng mới
 app.post("/user/insert", async (req, res) => {
@@ -73,39 +124,63 @@ app.post("/user/check-email", async (req, res) => {
   }
 });
 
-// Cập nhật thông tin người dùng
-app.put("/user/update/:id", async (req, res) => {
+
+// Cập nhật thông tin người dùng bằng id
+app.put("/user/update-profile/id/:id", async (req, res) => {
   const { id } = req.params;
-  const { name, email, password } = req.body;
+  const { name, bio } = req.body;  // Chỉ nhận name và bio, không cần password
+  const userController = new User();
   try {
-    const userController = new User();
-    const result = await userController.update(Number(id), {
-      id: Number(id),
-      avatar: "",
-      name,
-      email,
-      bio: "",
-      password,
-      createAt: new Date(),
-      flag: 1,
-    });
-    res.json({ message: "User updated successfully", result });
-    userController.closeConnection();
+      // Xử lý cập nhật dữ liệu user
+      const result = await userController.updateProfileById(Number(id), {
+          avatar: "",  // Không thay đổi avatar nếu không cần thiết
+          email: "",   // Nếu email không thay đổi, bỏ qua
+          name,        // Cập nhật tên
+          bio,         // Cập nhật bio
+          password: "", // Không thay đổi mật khẩu
+          createAt: new Date(), // Không thay đổi ngày tạo
+          flag: 1,      // Giữ giá trị flag mặc định
+      });
+      
+      // Nếu cập nhật thành công
+      res.json({ message: "User updated profile successfully", result });
+      userController.closeConnection();
   } catch (error) {
-    res.status(500).json({ error: "Failed to update user" });
+      console.error("Error updating user:", error);
+      res.status(500).json({ error: "Failed to update profile" });
   }
 });
 
-// Xóa người dùng
-app.delete("/user/delete/:id", async (req, res) => {
+// Hàm xử lý cho yêu cầu PUT
+app.put("/user/update-password/id/:id", async (req, res) => {
   const { id } = req.params;
+  const { currentPassword, newPassword } = req.body;
+  const userController = new User();
+
   try {
-    const userController = new User();
-    const result = await userController.delete(Number(id));
-    res.json({ message: "User deleted successfully", result });
-    userController.closeConnection();
+      const user = await userController.getUserById(Number(id));
+      
+      if (!user || user.password !== currentPassword) {
+          res.status(400).json({ error: "Mật khẩu hiện tại không đúng" });
+          return;
+      }
+
+      const result = await userController.updatePasswordById(Number(id), {
+          avatar: user.avatar,
+          name: user.name,
+          bio: user.bio,
+          email: user.email,
+          password: newPassword,
+          createAt: user.createAt,
+          flag: user.flag,
+      });
+
+      res.json({ message: "User updated password successfully", result });
   } catch (error) {
-    res.status(500).json({ error: "Failed to delete user" });
+      console.error("Error updating user:", error);
+      res.status(500).json({ error: "Failed to update password" });
+  } finally {
+      userController.closeConnection();
   }
 });
 

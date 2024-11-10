@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TextInput, Alert } from "react-native";
 import { Button } from "../components/Button";
 import { router } from "expo-router";
@@ -13,15 +14,16 @@ const styles = StyleSheet.create({
     header: {
         width: "100%",
         padding: 8,
-    },
-    header_text: {
-        fontSize: 20,
-        textAlign: "center",
-        color: "#fff",
+        flexDirection: "row",
+        justifyContent: "space-between",
     },
     user_info_text: {
         fontSize: 14,
         color: "#fff",
+    },
+    user_info_text2: {
+        fontSize: 14,
+        color: "#F00",
     },
     input: {
         width: "100%",
@@ -52,42 +54,112 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontSize: 20,
         textAlign: "center",
-    }
-})
+    },
+    error_message: {
+        fontSize: 14,
+        color: "#F00",
+        marginTop: 10,
+    },
+});
 
-const backButtonEvent = () => {
-    router.back();
-}
+const UserInfo = () => {
+    const [userData, setUserData] = useState({
+        username: "",
+        bio: "",
+    });
+    const [originalData, setOriginalData] = useState({
+        username: "",
+        bio: "",
+    });
+    const [originalPassword, setOriginalPassword] = useState("");
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [isEditing, setIsEditing] = useState(false);
+    const [error, setError] = useState("");  // Thêm trạng thái lỗi
+    const [isErrorVisible, setIsErrorVisible] = useState(false);  // Quản lý hiển thị thông báo lỗi
 
-const saveButtonOnPressed = () => {
-    console.log("Update account information");
-    Alert.alert(
-    'Lưu thông tin?',
-    '',
-    [
-      {
-        text: "Yes",
-        onPress: () => {
-          console.log("update account information succeed");
-          Alert.alert("Đã lưu thông tin thành công", "");
-          router.back();
-        },
-      },
-      {
-        text: "No",
-        onPress: () => {
-          console.log("update account information cancelled");
-          return;
+    useEffect(() => {
+        async function fetchUserData() {
+            try {
+                const response = await fetch(
+                    `${process.env.EXPO_PUBLIC_SERVER_URL}/user/get/id/1`
+                );
+                const data = await response.json();
+                setUserData({
+                    username: data.user_name || "",
+                    bio: data.bio || "",
+                });
+                setOriginalData({
+                    username: data.user_name || "",
+                    bio: data.bio || "",
+                });
+                setOriginalPassword(data.password || "");
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
         }
-      }
-    ],
-    {
-      cancelable: true,
-    }
-  )
-}
 
-const userInfo = () => {
+        fetchUserData();
+    }, []);
+
+    const backButtonEvent = () => {
+        router.back();
+    };
+
+    const validatePasswordAndUpdate = async () => {
+        setError("");  // Reset lỗi mỗi khi nhấn "Lưu thông tin"
+        setIsErrorVisible(true);  // Hiển thị dòng chữ đỏ khi nhấn Lưu thông tin
+
+        if (!userData.username || !currentPassword) {
+            setError("Vui lòng nhập đầy đủ thông tin");
+            return;
+        }
+
+        if (currentPassword !== originalPassword) {
+            setError("Mật khẩu không đúng. Vui lòng nhập lại mật khẩu chính xác.");
+            return;
+        }
+
+        await updateUserData();
+    };
+
+    const updateUserData = async () => {
+        try {
+            const response = await fetch(
+                `${process.env.EXPO_PUBLIC_SERVER_URL}/user/update-profile/id/1`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        name: userData.username,
+                        bio: userData.bio,
+                    }),
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Failed to update user data");
+            }
+
+            const result = await response.json();
+            Alert.alert("Thành công", "Dữ liệu người dùng đã được cập nhật thành công");
+
+            // Sau khi cập nhật thành công, làm mới dữ liệu
+            setOriginalData({ username: userData.username, bio: userData.bio });
+            setIsEditing(false);
+            setIsErrorVisible(false); // Ẩn dòng chữ đỏ sau khi lưu
+        } catch (error) {
+            console.error("Error updating user data:", error);
+            Alert.alert("Lỗi", "Không thể cập nhật thông tin người dùng");
+        }
+    };
+
+    const editButtonOnPressed = () => {
+        setIsEditing(true);
+        setIsErrorVisible(false);  // Ẩn lỗi khi bắt đầu chỉnh sửa
+    };
+
     return (
         <View style={styles.container}>
             <Button
@@ -95,34 +167,67 @@ const userInfo = () => {
                 buttonStyle={styles.backBtn}
                 textStyle={styles.backBtnText}
             >
-            Go back
+                Quay lại
             </Button>
             <View style={styles.header}>
-                <Text style={styles.header_text}>Thay đổi thông tin người dùng</Text>
+                <Text style={styles.user_info_text}>Tên hiện tại</Text>
+                <Text style={styles.user_info_text2}>{originalData.username || "N/A"}</Text>
             </View>
             <View style={styles.header}>
-                <Text style={styles.user_info_text}>Username</Text>
+                <Text style={styles.user_info_text}>Tên mới</Text>
             </View>
             <View style={styles.input}>
-                <TextInput style={styles.input_text}></TextInput>
+                <TextInput
+                    style={styles.input_text}
+                    value={userData.username}
+                    onChangeText={(text) => setUserData((prev) => ({ ...prev, username: text }))}
+                    editable={isEditing}
+                />
             </View>
             <View style={styles.header}>
-                <Text style={styles.user_info_text}>Email</Text>
-            </View>
-            <View style={styles.input}>
-                <TextInput style={styles.input_text}></TextInput>
+                <Text style={styles.user_info_text}>Bio hiện tại</Text>
+                <Text style={styles.user_info_text2}>{originalData.bio || "N/A"}</Text>
             </View>
             <View style={styles.header}>
-                <Text style={styles.user_info_text}>Mật khẩu</Text>
+                <Text style={styles.user_info_text}>Bio mới</Text>
             </View>
             <View style={styles.input}>
-                <TextInput style={styles.input_text}></TextInput>
+                <TextInput
+                    style={styles.input_text}
+                    value={userData.bio}
+                    onChangeText={(text) => setUserData((prev) => ({ ...prev, bio: text }))}
+                    editable={isEditing}
+                />
             </View>
+            <View style={styles.header}>
+                <Text style={styles.user_info_text}>Mật khẩu hiện tại</Text>
+            </View>
+            <View style={styles.input}>
+                <TextInput
+                    style={styles.input_text}
+                    secureTextEntry
+                    value={currentPassword}
+                    onChangeText={(text) => setCurrentPassword(text)}
+                    editable={isEditing}
+                />
+            </View>
+
+            {/* Hiển thị lỗi khi nhấn "Chỉnh sửa" và có lỗi */}
+            {isErrorVisible && error && <Text style={styles.error_message}>{error}</Text>}
+
             <View>
-                <Button buttonStyle={styles.save_button} textStyle={styles.save_button_text} onPress={saveButtonOnPressed}>Lưu thông tin</Button>
+                {isEditing ? (
+                    <Button buttonStyle={styles.save_button} textStyle={styles.save_button_text} onPress={validatePasswordAndUpdate}>
+                        Lưu thông tin
+                    </Button>
+                ) : (
+                    <Button buttonStyle={styles.save_button} textStyle={styles.save_button_text} onPress={editButtonOnPressed}>
+                        Chỉnh sửa
+                    </Button>
+                )}
             </View>
         </View>
     );
-}
+};
 
-export default userInfo;
+export default UserInfo;

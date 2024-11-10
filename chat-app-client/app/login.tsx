@@ -34,13 +34,13 @@ const login = () => {
       fontSize: 20,
     },
   });
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { session, signIn } = useSession();
 
   const Submit = () => {
     // console.log({ username: username, password: password });
-    signIn(username, password);
+    signIn(email, password);
   };
 
   return (
@@ -52,8 +52,8 @@ const login = () => {
             textContentType="emailAddress"
             label="Email"
             placeholder=""
-            onChangeText={(e) => setUsername(e)}
-            value={username}
+            onChangeText={(e) => setEmail(e)}
+            value={email}
           />
           <InputGroup
             textContentType="password"
