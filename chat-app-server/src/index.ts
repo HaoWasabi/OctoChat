@@ -158,27 +158,35 @@ app.put("/user/update-password/id/:id", async (req, res) => {
   const userController = new User();
 
   try {
+      // Lấy thông tin user từ ID
       const user = await userController.getUserById(Number(id));
       
-      if (!user || user.password !== currentPassword) {
+      if (!user) {
+          res.status(404).json({ error: "Người dùng không tồn tại" });
+          return;
+      }
+
+      // So sánh mật khẩu hiện tại với mật khẩu trong cơ sở dữ liệu
+      if (user.password !== currentPassword) {
           res.status(400).json({ error: "Mật khẩu hiện tại không đúng" });
           return;
       }
 
+      // Cập nhật mật khẩu mới vào cơ sở dữ liệu
       const result = await userController.updatePasswordById(Number(id), {
-          avatar: user.avatar,
-          name: user.name,
-          bio: user.bio,
-          email: user.email,
-          password: newPassword,
-          createAt: user.createAt,
-          flag: user.flag,
+          avatar: "",
+          name: "",
+          bio: "",
+          email: "",
+          password: newPassword, 
+          createAt: new Date(),
+          flag: 1,
       });
 
-      res.json({ message: "User updated password successfully", result });
+      res.json({ message: "Cập nhật mật khẩu thành công", result });
   } catch (error) {
-      console.error("Error updating user:", error);
-      res.status(500).json({ error: "Failed to update password" });
+      console.error("Lỗi khi cập nhật mật khẩu:", error);
+      res.status(500).json({ error: "Không thể cập nhật mật khẩu" });
   } finally {
       userController.closeConnection();
   }

@@ -84,52 +84,52 @@ async updateByEmail(email: string, user: UserData) {
   }
 
   // Cập nhật thông tin hồ sơ người dùng theo ID
-async updateProfileById(id: number, user: UserData) {
-  if (!id) throw new Error("User ID is required for update");
+  async updateProfileById(id: number, user: UserData) {
+    if (!id) throw new Error("User ID is required for update");
 
-  const query = `
-      UPDATE user 
-      SET user_name = ?, bio = ?
-      WHERE id = ?
-  `;
-  const values: [string, string, number] = [
-      user.name,
-      user.bio,
-      id,
-  ];
+    const query = `
+        UPDATE user 
+        SET user_name = ?, bio = ?
+        WHERE id = ?
+    `;
+    const values: [string, string, number] = [
+        user.name,
+        user.bio,
+        id,
+    ];
 
-  try {
-      const result = await this.db.update(query, values);
-      console.log("User updated successfully:", result);
-      return result;
-  } catch (error) {
-      console.error("Error updating user:", error);
-      throw error;
+    try {
+        const result = await this.db.update(query, values);
+        console.log("User updated successfully:", result);
+        return result;
+    } catch (error) {
+        console.error("Error updating user:", error);
+        throw error;
+    }
   }
-}
-// Cập nhật mật khẩu người dùng theo ID
-async updatePasswordById(id: number, user: UserData) {
-  if (!id) throw new Error("User ID is required for update");
+  // Cập nhật mật khẩu người dùng theo ID
+  async updatePasswordById(id: number, user: UserData) {
+    if (!id) throw new Error("User ID is required for update");
 
-  const query = `
-      UPDATE user 
-      SET password = ?
-      WHERE id = ?
-  `;
-  const values: [string, number] = [
-      user.password,
-      id,
-  ];
+    const query = `
+        UPDATE user 
+        SET password = ?
+        WHERE id = ?
+    `;
+    const values: [string, number] = [
+        user.password,
+        id,
+    ];
 
-  try {
-      const result = await this.db.update(query, values);
-      console.log("User updated successfully:", result);
-      return result;
-  } catch (error) {
-      console.error("Error updating user:", error);
-      throw error;
+    try {
+        const result = await this.db.update(query, values);
+        console.log("User updated successfully:", result);
+        return result;
+    } catch (error) {
+        console.error("Error updating user:", error);
+        throw error;
+    }
   }
-}
 // Lấy thông tin user theo email
 async getUserByEmail(userEmail: string) {
   const query = "SELECT * FROM user WHERE email = ?";

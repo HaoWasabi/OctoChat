@@ -52,7 +52,7 @@ const userInfoBtnOnPressed = () => {
 // Tiến tới trang thay đổi mật khẩu changePassword.tsx
 const changePasswordBtnOnPressed = () => {
   console.log("change password page");
-  router.navigate("../changePassword");
+  router.navigate("../passwordChange");
 }
 
 // Nút đăng xuất

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, TextInput, Alert } from "react-native";
 import { Button } from "../components/Button";
 import { router } from "expo-router";
@@ -71,13 +71,18 @@ const passwordChange = () => {
             return;
         }
         
+        if (newPassword.length < 8) {
+            Alert.alert("Mật khẩu tối thiểu 8 ký tự.");
+            return;
+        }
+
         if (newPassword !== repassword) {
-            Alert.alert("Mật khẩu không trùng khớp", "");
+            Alert.alert("Mật khẩu không trùng khớp.");
             return;
         }
 
         try {
-            const response = await fetch(`https://your-server-url.com/user/update-password/id/1`, {
+            const response = await fetch(`${process.env.EXPO_PUBLIC_SERVER_URL}/user/update-password/id/1`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -92,7 +97,7 @@ const passwordChange = () => {
 
             if (response.ok) {
                 Alert.alert("Đã lưu thông tin thành công", "");
-                router.back();
+                router.navigate(`/login`);
             } else {
                 Alert.alert("Lỗi cập nhật mật khẩu", result.error || "Cập nhật thất bại");
             }
@@ -120,11 +125,10 @@ const passwordChange = () => {
             <View style={styles.input}>
                 <TextInput 
                     style={styles.input_text}
-                    secureTextEntry={true}
-                    placeholder="Nhập mật khẩu mới"
                     placeholderTextColor="#888"
-                    value={newPassword}
+                    value={newPassword} // Bind input value to state
                     onChangeText={setNewPassword}
+                    secureTextEntry={true}
                 />
             </View>
             <View style={styles.header}>
@@ -134,9 +138,8 @@ const passwordChange = () => {
                 <TextInput 
                     style={styles.input_text}
                     secureTextEntry={true}
-                    placeholder="Nhập lại mật khẩu mới"
                     placeholderTextColor="#888"
-                    value={repassword}
+                    value={repassword} // Bind input value to state
                     onChangeText={setRepassword}
                 />
             </View>
@@ -147,9 +150,8 @@ const passwordChange = () => {
                 <TextInput 
                     style={styles.input_text}
                     secureTextEntry={true}
-                    placeholder="Nhập mật khẩu hiện tại"
                     placeholderTextColor="#888"
-                    value={currentPassword}
+                    value={currentPassword} // Bind input value to state
                     onChangeText={setCurrentPassword}
                 />
             </View>
