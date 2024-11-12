@@ -1,6 +1,7 @@
-import { SafeAreaView, Text, StyleSheet, View, Alert } from "react-native";
+import { StyleSheet, View, Alert } from "react-native";
 import { Button } from "../../components/Button";
-import { Redirect, router } from "expo-router";
+import { router } from "expo-router";
+import { useSession } from "../../components/Seesionprovider";
 const styles = StyleSheet.create({
   text: {
     color: "white",
@@ -40,61 +41,80 @@ const styles = StyleSheet.create({
   itemText: {
     fontSize: 18,
     color: "#ffffff",
-  }
+  },
 });
 
 // Tiến tới trang thay đổi thông tin cá nhân userInfo.tsx
 const userInfoBtnOnPressed = () => {
   console.log("user info page");
   router.navigate("../userInfo");
-}
+};
 
 // Tiến tới trang thay đổi mật khẩu changePassword.tsx
 const changePasswordBtnOnPressed = () => {
   console.log("change password page");
   router.navigate("../passwordChange");
-}
-
-// Nút đăng xuất
-const logoutBtn = () => {
-  console.log("User log out");
-  router.navigate("../login");
-  // Alert.alert(
-  //   'Bạn có chắc là muốn đăng xuất?',
-  //   '',
-  //   [
-  //     {
-  //       text: "Yes",
-  //       onPress: () => {
-  //         console.log("logout confirm: yes");
-  //         router.navigate("../login");
-  //       },
-  //     },
-  //     {
-  //       text: "No",
-  //       onPress: () => {
-  //         console.log("logout confirm: no");
-  //         return;
-  //       }
-  //     }
-  //   ],
-  //   {
-  //     cancelable: true,
-  //   }
-  // )
-}
+};
 
 const setting = () => {
+  const { signOut } = useSession();
+
+  // Nút đăng xuất
+  const logoutBtn = () => {
+    console.log("User log out");
+    Alert.alert(
+      "Bạn có chắc là muốn đăng xuất?",
+      "",
+      [
+        {
+          text: "No",
+          onPress: () => {
+            console.log("logout confirm: no");
+            return;
+          },
+        },
+        {
+          text: "Yes",
+          onPress: () => {
+            console.log("logout confirm: yes");
+            signOut();
+          },
+        },
+      ],
+      {
+        cancelable: true,
+      }
+    );
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.containerItem}>
-        <Button buttonStyle={styles.itemText} textStyle={styles.itemText} onPress={userInfoBtnOnPressed}>Thông tin cá nhân</Button>
+        <Button
+          buttonStyle={styles.itemText}
+          textStyle={styles.itemText}
+          onPress={userInfoBtnOnPressed}
+        >
+          Thông tin cá nhân
+        </Button>
       </View>
       <View style={styles.containerItem}>
-        <Button buttonStyle={styles.itemText} textStyle={styles.itemText} onPress={changePasswordBtnOnPressed}>Đổi mật khẩu</Button>
+        <Button
+          buttonStyle={styles.itemText}
+          textStyle={styles.itemText}
+          onPress={changePasswordBtnOnPressed}
+        >
+          Đổi mật khẩu
+        </Button>
       </View>
       <View style={styles.containerItem}>
-        <Button buttonStyle={styles.itemText} textStyle={styles.itemText} onPress={logoutBtn}>Đăng xuất</Button>
+        <Button
+          buttonStyle={styles.itemText}
+          textStyle={styles.itemText}
+          onPress={logoutBtn}
+        >
+          Đăng xuất
+        </Button>
       </View>
     </View>
   );
