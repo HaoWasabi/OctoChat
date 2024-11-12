@@ -1,8 +1,6 @@
 import { Redirect, useLocalSearchParams } from "expo-router";
 import { Alert, SafeAreaView, StyleSheet, Text } from "react-native";
 import { Link } from "expo-router";
-import { Button } from "../../../components/Button";
-import { useSession } from "../../../components/Seesionprovider";
 import { useEffect, useState } from "react";
 import { type serverChannel } from "../../../types/model";
 
@@ -26,7 +24,6 @@ const styles = StyleSheet.create({
 
 const index = () => {
   const { user_id, server_id } = useLocalSearchParams();
-  const { signOut } = useSession();
   const [channelList, setChannelList] = useState(Array<serverChannel>);
 
   const getChannelList = async () => {
@@ -71,14 +68,6 @@ const index = () => {
   return (
     <>
       <SafeAreaView style={styles.center}>
-        <Button
-          style={{ backgroundColor: "blue" }}
-          onPress={() => {
-            signOut();
-          }}
-        >
-          click me
-        </Button>
         <Text style={styles.text}>
           hi this is home of {user_id} in {server_id}
         </Text>
