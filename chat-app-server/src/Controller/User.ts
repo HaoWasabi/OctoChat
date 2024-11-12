@@ -42,32 +42,30 @@ export default class User {
     }
   }
 
-  // Cập nhật thông tin user
-  async update(userID: number, user: UserData) {
-    if (!userID) throw new Error("User ID is required for update");
+// Cập nhật thông tin user
+async updateByEmail(email: string, user: UserData) {
+  if (!email) throw new Error("User email is required for update");
 
-    const query =
-      "UPDATE user SET user_avt = ?, user_name = ?, email = ?, password = ?, cread_at = ?, flag = ? WHERE id = ?";
-    const values: [string, string, string, string, string, number, number] = [
-      user.avatar,
+  const query =
+      "UPDATE user SET user_name = ?, bio = ?, password = ?, create_at = ?, flag = ? WHERE email = ?";
+  const values: [string, string, string, string, number, string] = [
       user.name,
-      user.email,
+      user.bio,
       user.password,
-      user.createAt.toISOString(),
+      user.createAt.toISOString().slice(0, 19).replace("T", " "),
       user.flag,
-      userID,
-    ];
+      email,
+  ];
 
-    try {
+  try {
       const result = await this.db.update(query, values);
       console.log("User updated successfully:", result);
-      // this.close();
       return result;
-    } catch (error) {
+  } catch (error) {
       console.error("Error updating user:", error);
       throw error;
-    }
   }
+}
 
   // Xóa user theo ID
   async delete(userId: number) {
@@ -85,21 +83,88 @@ export default class User {
     }
   }
 
-  // Lấy thông tin user theo ID
-  async getUserById(userId: number) {
-    const query = "SELECT * FROM user WHERE id = ?";
-    const values: [number] = [userId];
+  // Cập nhật thông tin hồ sơ người dùng theo ID
+  async updateProfileById(id: number, user: UserData) {
+    if (!id) throw new Error("User ID is required for update");
+
+    const query = `
+        UPDATE user 
+        SET user_name = ?, bio = ?
+        WHERE id = ?
+    `;
+    const values: [string, string, number] = [
+        user.name,
+        user.bio,
+        id,
+    ];
 
     try {
-      const result = await this.db.select(query, values);
-      console.log("User retrieved successfully:", result);
-      // this.close();
-      return result;
+        const result = await this.db.update(query, values);
+        console.log("User updated successfully:", result);
+        return result;
     } catch (error) {
-      console.error("Error retrieving user:", error);
-      throw error;
+        console.error("Error updating user:", error);
+        throw error;
     }
   }
+  // Cập nhật mật khẩu người dùng theo ID
+  async updatePasswordById(id: number, user: UserData) {
+    if (!id) throw new Error("User ID is required for update");
+
+    const query = `
+        UPDATE user 
+        SET password = ?
+        WHERE id = ?
+    `;
+    const values: [string, number] = [
+        user.password,
+        id,
+    ];
+
+    try {
+        const result = await this.db.update(query, values);
+        console.log("User updated successfully:", result);
+        return result;
+    } catch (error) {
+        console.error("Error updating user:", error);
+        throw error;
+    }
+  }
+// Lấy thông tin user theo email
+async getUserByEmail(userEmail: string) {
+  const query = "SELECT * FROM user WHERE email = ?";
+  const values: [string] = [userEmail];
+
+  try {
+    const result = await this.db.select(query, values);
+    
+    // Kiểm tra nếu kết quả trả về là một mảng và lấy phần tử đầu tiên nếu tồn tại
+    const user = (result as UserData[]).length > 0 ? (result as UserData[])[0] : null;
+    
+    console.log("User retrieved successfully:", user);
+    return user; // Trả về đối tượng người dùng hoặc null nếu không tìm thấy
+  } catch (error) {
+    console.error("Error retrieving user:", error);
+    throw error; // Ném lỗi để xử lý bên ngoài
+  }
+}
+
+// Lấy thông tin người dùng theo ID
+async getUserById(userId: number) {
+  const query = "SELECT * FROM user WHERE id = ?";
+  const values: [number] = [userId];
+
+  try{
+    const result = await this.db.select(query, values);
+    const user = (result as UserData[]).length > 0 ? (result as UserData[])[0] : null;
+    console.log("User retrieved successfully:", user);
+    return user;
+  }
+  catch(error){
+    console.error("Error retrieving user:", error);
+    throw error;
+  }
+}
 
   async checkUserWhenLogin(email: string, password: string) {
     const query = "SELECT * FROM user WHERE email = ? AND password = ?";
